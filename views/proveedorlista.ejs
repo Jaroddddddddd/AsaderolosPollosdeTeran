@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl"
+      crossorigin="anonymous"
+    />
+    <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'/>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.23/css/dataTables.bootstrap5.min.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" integrity="sha512-HK5fgLBL+xu6dm/Ii3z4xhlSUyZgTT9tuc/hSrtw6uzJOvgRr2a9jyxxT1ely+B+xFAmJKVSTbpM/CuL7qxO8w==" crossorigin="anonymous" />
+
+    <title>Lista de proveedores</title>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#"></a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="proveedoringreso">Nuevo proveedor<i class='bx bxs-user-plus'></i></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#"></a>
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link disabled"
+                href="#"
+                tabindex="-1"
+                aria-disabled="true"
+                ></a
+              >
+            </li>
+          </ul>
+          <form class="d-flex">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link" href="index"><i class='bx bx-home bx-md '></i></a>
+              </li>
+              <li class="nav-item">
+                <a onclick="return salir()" class="nav-link" href="login"><i class='bx bx-door-open bx-md '></i></a>
+              </li>
+            </ul>
+          </form>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container"> 
+      <div class="text-end">
+        <a href="/proveedoringreso" class="badge bg-primary text-wrap mt-3" style="width: 7rem; height:5rem; text-decoration:none; font-size: 17px; border: ;"><i class="fas fa-user-plus size:7px "></i>Cree un nuevo proveedor</a>
+      </div>
+     
+        <h1 class="btn-outline-success mt-2"><i class='bx bxs-user-account bx-tada-hover bx-md'></i>LISTA DE PROVEEDORES</h1>
+        <table id="tableproveedor" class="table table-bordered border-dark table-hover table-striped text-center mt-4">
+            <thead>
+                <tr class="bg-success text-white fs-4">
+                    <th scope="col">REFERENCIA</th>
+                    <th scope="col">NOMBRE</th>
+                    <th scope="col">TELÉFONO</th>
+                    <th scope="col">CORREO</th>
+                    <th scope="col">ACCIONES</th>   
+                 
+                </tr>
+            </thead>
+            <tbody>
+                 <% results.forEach((proveedor)=> { %>
+
+                <tr>
+                <td><%= proveedor.proveedorreferencia  %></td>
+                <td><%= proveedor.proveedornombre %></td>
+                <td><%= proveedor.proveedortelefono %></td>
+                <td><%= proveedor.proveedorcorreo %></td>
+                <td>
+                    <a href="/proveedoreditar/<%= proveedor.proveedorreferencia %>" class="btn btn-outline-info"><i class="fas fa-pen-square"></i></a>
+                   <!--- <a href="/proveedoreliminar/<%= proveedor.proveedorreferencia %>" onclick="return confirm('Se eliminará el registro ¿Está seguro de eliminar el proveedor?');" class="btn btn-outline-danger"><i class="fas fa-trash-alt"></i></a> -->
+                   
+                   <a onclick="return confirmareliminarproveedor(<%= proveedor.proveedorreferencia %>)" class="btn btn-outline-danger" ><i class="fas fa-trash-alt"></i></a>
+                </td>
+                 </tr>
+                 <% }) %>
+            </tbody>
+        </table>
+    </div>
+ 
+
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.23/js/dataTables.bootstrap5.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.14.1/dist/sweetalert2.all.min.js"></script>
+    <script >
+          $(document).ready(function() {
+          $('#tableproveedor').DataTable(
+            {
+            pageLength: 5,
+            lengthMenu: [[5, 10, 20, -1], [5, 10, 20, 'Todos']]
+          } );
+          
+            });
+          function confirmareliminarproveedor(proveedorreferencia){
+                            Swal.fire({
+                  title: '¿Confirma eliminar el registro: ' + proveedorreferencia+'?',
+                  icon: 'warning',
+                  showCancelButton: true,
+                  confirmButtonColor: '#3085d6',
+                  cancelButtonColor: '#d33',
+                  confirmButtonText: 'Confirmar'
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    window.location = '/proveedoreliminar/' + proveedorreferencia;
+                    alert("El proveedor ha sido eliminado");   
+                  } 
+                })
+          }
+    </script>
+    <script>
+      function salir() {
+        alert("Está saliendo del sistema");
+      }
+    </script>
+  </body>
+</html>
